@@ -22,7 +22,7 @@ namespace GeneratorResearchPseudorandomNumbers
         }
         private int[] GenerateFixedArray()
         {
-            return new int[] { 241, 15, 125, 356, 412 };
+            return new int[] { 12, 12, 12, 12, 5 };
         }
 
         public void General()

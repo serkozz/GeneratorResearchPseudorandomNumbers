@@ -163,10 +163,9 @@ namespace GeneratorResearchPseudorandomNumbers
             this.frequencyChart.Location = new System.Drawing.Point(233, 12);
             this.frequencyChart.Name = "frequencyChart";
             series1.ChartArea = "ChartArea1";
+            series1.IsVisibleInLegend = false;
             series1.Legend = "Legend1";
-            series1.MarkerBorderWidth = 0;
             series1.Name = "Series1";
-            series1.YValuesPerPoint = 6;
             this.frequencyChart.Series.Add(series1);
             this.frequencyChart.Size = new System.Drawing.Size(555, 210);
             this.frequencyChart.TabIndex = 10;
@@ -185,6 +184,7 @@ namespace GeneratorResearchPseudorandomNumbers
             this.valueChart.Location = new System.Drawing.Point(233, 235);
             this.valueChart.Name = "valueChart";
             series2.ChartArea = "ChartArea1";
+            series2.IsVisibleInLegend = false;
             series2.Legend = "Legend1";
             series2.Name = "Series1";
             this.valueChart.Series.Add(series2);
