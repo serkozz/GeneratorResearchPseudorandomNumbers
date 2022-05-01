@@ -11,7 +11,7 @@ namespace GeneratorResearchPseudorandomNumbers
         private int[] fixedArray;
 
         private SortedDictionary<int, double> valueProbabilityDictionary = new SortedDictionary<int, double>();
-        private Dictionary<int, double> distributionFunctionOfRandomVariableDictionary = new Dictionary<int, double>();
+        private SortedDictionary<int, double> distributionFunctionOfRandomVariableDictionary = new SortedDictionary<int, double>();
 
         private double mathExpectation = 0;
         private double dispersion = 0;
@@ -39,7 +39,7 @@ namespace GeneratorResearchPseudorandomNumbers
             return valueProbabilityDictionary;
         }
 
-        public Dictionary<int, double> GetDistributionFunctionOfRandomVariableDictionary()
+        public SortedDictionary<int, double> GetDistributionFunctionOfRandomVariableDictionary()
         {
             return distributionFunctionOfRandomVariableDictionary;
         }
@@ -96,9 +96,9 @@ namespace GeneratorResearchPseudorandomNumbers
                 F(4< x ≤5) = 0.2 + 0.6 = 0.8
                 F(x>5) = 1*/
 
-        private Dictionary<int, double> CreateDictionaryForDistributionFunctionOfRandomVariable(SortedDictionary<int, double> valueProbabilityDictionary)
+        private SortedDictionary<int, double> CreateDictionaryForDistributionFunctionOfRandomVariable(SortedDictionary<int, double> valueProbabilityDictionary)
         {
-            Dictionary<int, double> distributionFunctionOfRandomVariableDictionary = new Dictionary<int, double>(); // {значение, вероятность того, что следующее значение будет меньше чем текущее}
+            SortedDictionary<int, double> distributionFunctionOfRandomVariableDictionary = new SortedDictionary<int, double>(); // {значение, вероятность того, что следующее значение будет меньше чем текущее}
             double probabilitySum = 0;
             /*            bool isNowFirstElementOfTheDictionary = true;
                         bool isNowLastElementOfTheDictionary = false;*/

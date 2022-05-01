@@ -143,6 +143,7 @@ namespace GeneratorResearchPseudorandomNumbers
             this.clearButton.TabIndex = 8;
             this.clearButton.Text = "Очистить";
             this.clearButton.UseVisualStyleBackColor = true;
+            this.clearButton.Click += new System.EventHandler(this.clearButton_Click);
             // 
             // exitButton
             // 
@@ -153,6 +154,7 @@ namespace GeneratorResearchPseudorandomNumbers
             this.exitButton.TabIndex = 9;
             this.exitButton.Text = "Выход";
             this.exitButton.UseVisualStyleBackColor = true;
+            this.exitButton.Click += new System.EventHandler(this.exitButton_Click);
             // 
             // frequencyChart
             // 
