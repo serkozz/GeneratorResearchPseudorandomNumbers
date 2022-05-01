@@ -9,17 +9,41 @@ namespace GeneratorResearchPseudorandomNumbers
     class BuiltInRandom
     {
         private int sequenceLength;
+        private int[] randomArray;
+
         private Dictionary<int, double> valueProbabilityDictionary = new Dictionary<int, double>();
-        private double mathExpectation;
-        private double dispersion;
+
+        private double mathExpectation = 0;
+        private double dispersion = 0;
         public BuiltInRandom(int sequenceLength)
         {
             this.sequenceLength = sequenceLength;
         }
 
+        public int[] GetRandomArray()
+        {
+            return randomArray;
+        }
         public Dictionary<int, double> GetValueProbabilityDictionary()
         {
             return valueProbabilityDictionary;
+        }
+
+        public double GetMathExpectation()
+        {
+            return mathExpectation;
+        }
+
+        public double GetDispersion()
+        {
+            return dispersion;
+        }
+
+        public void General()
+        {
+            randomArray = GenerateRandomArray(0, 100);
+            valueProbabilityDictionary = CreateDictionaryOfProbabilities(randomArray);
+            mathExpectation = CalculateMathExpectation(valueProbabilityDictionary);
         }
 
         public int[] GenerateRandomArray(int minValue, int maxValue)
@@ -40,7 +64,7 @@ namespace GeneratorResearchPseudorandomNumbers
         /// <summary>
         /// Возвращает словарь с вероятностями появления каждого числа интервала [minValue, maxValue]
         /// </summary>
-        private void CreateDictionaryOfProbabilities(int[] data)
+        private Dictionary<int, double> CreateDictionaryOfProbabilities(int[] data)
         {
             Dictionary<int, int> valueRateDictionary = new Dictionary<int, int>(); // {значение, количество появлений}
             double probability;
@@ -52,7 +76,8 @@ namespace GeneratorResearchPseudorandomNumbers
                 else if (valueRateDictionary.ContainsKey(data[i]))
                     valueRateDictionary[data[i]]++;
             }
-            
+
+            Dictionary<int, double> valueProbabilityDictionary = new Dictionary<int, double>(); // {значение, вероятность появления}
             foreach (KeyValuePair<int, int> valueRatePair in valueRateDictionary)
             {
                 double first = valueRatePair.Value;
@@ -61,11 +86,20 @@ namespace GeneratorResearchPseudorandomNumbers
                 //probability = valueRatePair.Value / sequenceLength; // Лол, а так он не делит, так получается ноль всегда, ладно,
                 valueProbabilityDictionary.Add(valueRatePair.Key, Math.Round(probability, 5));
             }
+
+            return valueProbabilityDictionary;
         }
 
-        public void CalculateMathExpectation()
+        public double CalculateMathExpectation(Dictionary<int, double> valueProbabilityDictionary)
         {
+            double mathExpectation = 0;
 
+            foreach (KeyValuePair<int, double> keyValuePair in valueProbabilityDictionary)
+            {
+                mathExpectation += keyValuePair.Key * keyValuePair.Value;
+            }
+
+            return mathExpectation;
         }
         
         public void CalculateDispersion()

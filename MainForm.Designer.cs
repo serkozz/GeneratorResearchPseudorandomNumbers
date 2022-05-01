@@ -43,7 +43,7 @@ namespace GeneratorResearchPseudorandomNumbers
             this.builtInGeneratorTypeRadioButton = new System.Windows.Forms.RadioButton();
             this.ownGeneratorTypeRadioButton = new System.Windows.Forms.RadioButton();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.statsTextBox = new System.Windows.Forms.TextBox();
             this.startButton = new System.Windows.Forms.Button();
             this.clearButton = new System.Windows.Forms.Button();
             this.exitButton = new System.Windows.Forms.Button();
@@ -114,13 +114,13 @@ namespace GeneratorResearchPseudorandomNumbers
             this.label3.TabIndex = 5;
             this.label3.Text = "Статистика";
             // 
-            // textBox1
+            // statsTextBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(15, 154);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(212, 204);
-            this.textBox1.TabIndex = 6;
+            this.statsTextBox.Location = new System.Drawing.Point(15, 154);
+            this.statsTextBox.Multiline = true;
+            this.statsTextBox.Name = "statsTextBox";
+            this.statsTextBox.Size = new System.Drawing.Size(212, 204);
+            this.statsTextBox.TabIndex = 6;
             // 
             // startButton
             // 
@@ -204,7 +204,7 @@ namespace GeneratorResearchPseudorandomNumbers
             this.Controls.Add(this.exitButton);
             this.Controls.Add(this.clearButton);
             this.Controls.Add(this.startButton);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.statsTextBox);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.ownGeneratorTypeRadioButton);
             this.Controls.Add(this.builtInGeneratorTypeRadioButton);
@@ -228,7 +228,7 @@ namespace GeneratorResearchPseudorandomNumbers
         private System.Windows.Forms.RadioButton builtInGeneratorTypeRadioButton;
         private System.Windows.Forms.RadioButton ownGeneratorTypeRadioButton;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox statsTextBox;
         private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.Button clearButton;
         private System.Windows.Forms.Button exitButton;

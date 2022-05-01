@@ -35,10 +35,14 @@ namespace GeneratorResearchPseudorandomNumbers
             if (builtInGeneratorTypeRadioButton.Checked)
             {
                 BuiltInRandom builtInRandom = new BuiltInRandom(sequenceLength);
-                builtInRandomArray = builtInRandom.GenerateRandomArray(0, 100);
-                //CreateChart(frequencyChart, generatorType: GeneratorType.BuiltIn, builtInRandomArray);
+                builtInRandom.General();
+                builtInRandomArray = builtInRandom.GetRandomArray();
+
                 ClearCharts();
                 CreateChart(frequencyChart, generatorType: GeneratorType.BuiltIn, builtInRandom.GetValueProbabilityDictionary());
+
+                ClearStats();
+                CreateStats(mathExpectation: builtInRandom.GetMathExpectation(), dispersion: builtInRandom.GetDispersion());
             }
 
             else if (ownGeneratorTypeRadioButton.Checked)
@@ -104,6 +108,19 @@ namespace GeneratorResearchPseudorandomNumbers
         {
             frequencyChart.Series[0].Points.Clear();
             valueChart.Series[0].Points.Clear();
+        }
+    
+        private void CreateStats(double mathExpectation, double dispersion)
+        {
+            string mathExpectationString = "Математическое ожидание случайной величины: " + mathExpectation;
+            string dispersionString = "Дисперсия случайной величины: " + dispersion;
+
+            statsTextBox.Text = mathExpectationString + Environment.NewLine + Environment.NewLine + dispersionString;
+        }
+
+        private void ClearStats()
+        {
+            statsTextBox.Text = String.Empty;
         }
     }
 }
