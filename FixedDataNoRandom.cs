@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace GeneratorResearchPseudorandomNumbers
 {
-    class BuiltInRandom
+    class FixedDataNoRandom
     {
-        private int sequenceLength;
-        private int[] randomArray;
+        private int[] fixedArray;
 
         private SortedDictionary<int, double> valueProbabilityDictionary = new SortedDictionary<int, double>();
         private Dictionary<int, double> distributionFunctionOfRandomVariableDictionary = new Dictionary<int, double>();
@@ -17,16 +16,24 @@ namespace GeneratorResearchPseudorandomNumbers
         private double mathExpectation = 0;
         private double dispersion = 0;
         private double standartDeviation;
-
-        public BuiltInRandom(int sequenceLength)
+        public FixedDataNoRandom()
         {
-            this.sequenceLength = sequenceLength;
+            fixedArray = GenerateFixedArray();
+        }
+        private int[] GenerateFixedArray()
+        {
+            return new int[] { 241, 15, 125, 356, 412 };
         }
 
-        public int[] GetRandomArray()
+        public void General()
         {
-            return randomArray;
+            valueProbabilityDictionary = CreateDictionaryOfProbabilities(fixedArray);
+            distributionFunctionOfRandomVariableDictionary = CreateDictionaryForDistributionFunctionOfRandomVariable(valueProbabilityDictionary);
+            mathExpectation = CalculateMathExpectation(valueProbabilityDictionary);
+            dispersion = CalculateDispersion(valueProbabilityDictionary);
+            standartDeviation = CalculateStandartDeviation(dispersion);
         }
+
         public SortedDictionary<int, double> GetValueProbabilityDictionary()
         {
             return valueProbabilityDictionary;
@@ -52,31 +59,6 @@ namespace GeneratorResearchPseudorandomNumbers
             return standartDeviation;
         }
 
-        public void General()
-        {
-            randomArray = GenerateRandomArray(0, 100);
-            valueProbabilityDictionary = CreateDictionaryOfProbabilities(randomArray);
-            distributionFunctionOfRandomVariableDictionary = CreateDictionaryForDistributionFunctionOfRandomVariable(valueProbabilityDictionary);
-            mathExpectation = CalculateMathExpectation(valueProbabilityDictionary);
-            dispersion = CalculateDispersion(valueProbabilityDictionary);
-            standartDeviation = CalculateStandartDeviation(dispersion);
-        }
-
-        private int[] GenerateRandomArray(int minValue, int maxValue)
-        {
-            int[] randomArray = new int[sequenceLength];
-            Random random = new Random();
-
-            for (int i = 0; i < sequenceLength; i++)
-            {
-                randomArray[i] = random.Next(minValue, maxValue);
-            }
-
-            CreateDictionaryOfProbabilities(randomArray);
-
-            return randomArray;
-        }
-
         /// <summary>
         /// Возвращает словарь с вероятностями появления каждого числа интервала [minValue, maxValue]
         /// </summary>
@@ -97,21 +79,50 @@ namespace GeneratorResearchPseudorandomNumbers
             foreach (KeyValuePair<int, int> valueRatePair in valueRateDictionary)
             {
                 double first = valueRatePair.Value;
-                double second = sequenceLength;
+                double second = fixedArray.Length;
                 probability = first / second;
                 //probability = valueRatePair.Value / sequenceLength; // Лол, а так он не делит, так получается ноль всегда, ладно,
                 valueProbabilityDictionary.Add(valueRatePair.Key, Math.Round(probability, 5));
             }
             SortedDictionary<int, double> sortedByKeyProbabilityDictionary = new SortedDictionary<int, double>(valueProbabilityDictionary);
-
+            
             return sortedByKeyProbabilityDictionary;
         }
+
+        /*        F(x≤1) = 0
+                F(1< x ≤2) = 0.2
+                F(2< x ≤3) = 0.2 + 0.2 = 0.4
+                F(3< x ≤4) = 0.2 + 0.4 = 0.6
+                F(4< x ≤5) = 0.2 + 0.6 = 0.8
+                F(x>5) = 1*/
 
         private Dictionary<int, double> CreateDictionaryForDistributionFunctionOfRandomVariable(SortedDictionary<int, double> valueProbabilityDictionary)
         {
             Dictionary<int, double> distributionFunctionOfRandomVariableDictionary = new Dictionary<int, double>(); // {значение, вероятность того, что следующее значение будет меньше чем текущее}
             double probabilitySum = 0;
+            /*            bool isNowFirstElementOfTheDictionary = true;
+                        bool isNowLastElementOfTheDictionary = false;*/
 
+            /// Подумать над этим, пока выберу более легкое
+            /*            foreach (KeyValuePair<int, double> keyValuePair in sortedByKeyValueProbabilityDictionary)
+                        {
+                            if(isNowFirstElementOfTheDictionary)
+                            {
+                                distributionFunctionOfRandomVariableDictionary.Add(keyValuePair.Key - 1, probabilitySum);
+                                isNowFirstElementOfTheDictionary = false;
+                            }
+                            else if (isNowLastElementOfTheDictionary)
+                            {
+                                distributionFunctionOfRandomVariableDictionary.Add(keyValuePair.Key + 1, probabilitySum);
+                                isNowLastElementOfTheDictionary = false;
+                            }
+                            else
+                            {
+                                if(keyValuePair.Key + 1 == sortedByKeyValueProbabilityDictionary)
+                                distributionFunctionOfRandomVariableDictionary.Add(keyValuePair.Key, probabilitySum);
+                            }
+                            probabilitySum += keyValuePair.Value;
+                        }*/
             foreach (KeyValuePair<int, double> keyValuePair in valueProbabilityDictionary)
             {
                 probabilitySum += Math.Round(keyValuePair.Value, 5);
@@ -120,6 +131,7 @@ namespace GeneratorResearchPseudorandomNumbers
 
             return distributionFunctionOfRandomVariableDictionary;
         }
+
         private double CalculateMathExpectation(SortedDictionary<int, double> valueProbabilityDictionary)
         {
             double mathExpectation = 0;
@@ -131,7 +143,7 @@ namespace GeneratorResearchPseudorandomNumbers
 
             return mathExpectation;
         }
-        
+
         private double CalculateDispersion(SortedDictionary<int, double> valueProbabilityDictionary)
         {
             double mathExpectation = 0;
@@ -145,15 +157,10 @@ namespace GeneratorResearchPseudorandomNumbers
 
             return Math.Round(mathExpectationFromXInSquare - Math.Pow(mathExpectation, 2), 2);
         }
-
-/*        private double CalculateCenteredRandomVariable()
-        {
-
-        }*/
-
         private double CalculateStandartDeviation(double dispersion)
         {
             return Math.Round(Math.Sqrt(dispersion), 2);
         }
+
     }
 }

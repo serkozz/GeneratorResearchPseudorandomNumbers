@@ -49,6 +49,7 @@ namespace GeneratorResearchPseudorandomNumbers
             this.exitButton = new System.Windows.Forms.Button();
             this.frequencyChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.valueChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.noGeneratorRadioButton = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.frequencyChart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.valueChart)).BeginInit();
             this.SuspendLayout();
@@ -74,7 +75,7 @@ namespace GeneratorResearchPseudorandomNumbers
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(12, 63);
+            this.label2.Location = new System.Drawing.Point(12, 87);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(87, 16);
             this.label2.TabIndex = 2;
@@ -84,7 +85,7 @@ namespace GeneratorResearchPseudorandomNumbers
             // 
             this.builtInGeneratorTypeRadioButton.AutoSize = true;
             this.builtInGeneratorTypeRadioButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.builtInGeneratorTypeRadioButton.Location = new System.Drawing.Point(15, 82);
+            this.builtInGeneratorTypeRadioButton.Location = new System.Drawing.Point(15, 106);
             this.builtInGeneratorTypeRadioButton.Name = "builtInGeneratorTypeRadioButton";
             this.builtInGeneratorTypeRadioButton.Size = new System.Drawing.Size(97, 17);
             this.builtInGeneratorTypeRadioButton.TabIndex = 3;
@@ -96,7 +97,7 @@ namespace GeneratorResearchPseudorandomNumbers
             // 
             this.ownGeneratorTypeRadioButton.AutoSize = true;
             this.ownGeneratorTypeRadioButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.ownGeneratorTypeRadioButton.Location = new System.Drawing.Point(15, 105);
+            this.ownGeneratorTypeRadioButton.Location = new System.Drawing.Point(15, 129);
             this.ownGeneratorTypeRadioButton.Name = "ownGeneratorTypeRadioButton";
             this.ownGeneratorTypeRadioButton.Size = new System.Drawing.Size(104, 17);
             this.ownGeneratorTypeRadioButton.TabIndex = 4;
@@ -108,7 +109,7 @@ namespace GeneratorResearchPseudorandomNumbers
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.Location = new System.Drawing.Point(12, 135);
+            this.label3.Location = new System.Drawing.Point(12, 152);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(94, 16);
             this.label3.TabIndex = 5;
@@ -116,10 +117,10 @@ namespace GeneratorResearchPseudorandomNumbers
             // 
             // statsTextBox
             // 
-            this.statsTextBox.Location = new System.Drawing.Point(15, 154);
+            this.statsTextBox.Location = new System.Drawing.Point(15, 171);
             this.statsTextBox.Multiline = true;
             this.statsTextBox.Name = "statsTextBox";
-            this.statsTextBox.Size = new System.Drawing.Size(212, 204);
+            this.statsTextBox.Size = new System.Drawing.Size(212, 187);
             this.statsTextBox.TabIndex = 6;
             // 
             // startButton
@@ -163,6 +164,7 @@ namespace GeneratorResearchPseudorandomNumbers
             this.frequencyChart.Name = "frequencyChart";
             series1.ChartArea = "ChartArea1";
             series1.Legend = "Legend1";
+            series1.MarkerBorderWidth = 0;
             series1.Name = "Series1";
             series1.YValuesPerPoint = 6;
             this.frequencyChart.Series.Add(series1);
@@ -194,11 +196,24 @@ namespace GeneratorResearchPseudorandomNumbers
             title2.Text = "Интегральная функция распределения";
             this.valueChart.Titles.Add(title2);
             // 
+            // noGeneratorRadioButton
+            // 
+            this.noGeneratorRadioButton.AutoSize = true;
+            this.noGeneratorRadioButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.noGeneratorRadioButton.Location = new System.Drawing.Point(15, 67);
+            this.noGeneratorRadioButton.Name = "noGeneratorRadioButton";
+            this.noGeneratorRadioButton.Size = new System.Drawing.Size(171, 17);
+            this.noGeneratorRadioButton.TabIndex = 12;
+            this.noGeneratorRadioButton.TabStop = true;
+            this.noGeneratorRadioButton.Text = "Фиксированные данные";
+            this.noGeneratorRadioButton.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.noGeneratorRadioButton);
             this.Controls.Add(this.valueChart);
             this.Controls.Add(this.frequencyChart);
             this.Controls.Add(this.exitButton);
@@ -234,6 +249,7 @@ namespace GeneratorResearchPseudorandomNumbers
         private System.Windows.Forms.Button exitButton;
         private System.Windows.Forms.DataVisualization.Charting.Chart frequencyChart;
         private System.Windows.Forms.DataVisualization.Charting.Chart valueChart;
+        private System.Windows.Forms.RadioButton noGeneratorRadioButton;
     }
 }
 
