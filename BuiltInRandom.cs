@@ -44,6 +44,7 @@ namespace GeneratorResearchPseudorandomNumbers
             randomArray = GenerateRandomArray(0, 100);
             valueProbabilityDictionary = CreateDictionaryOfProbabilities(randomArray);
             mathExpectation = CalculateMathExpectation(valueProbabilityDictionary);
+            dispersion = CalculateDispersion(valueProbabilityDictionary);
         }
 
         public int[] GenerateRandomArray(int minValue, int maxValue)
@@ -102,9 +103,18 @@ namespace GeneratorResearchPseudorandomNumbers
             return mathExpectation;
         }
         
-        public void CalculateDispersion()
+        public double CalculateDispersion(Dictionary<int, double> valueProbabilityDictionary)
         {
+            double mathExpectation = 0;
+            double mathExpectationFromXInSquare = 0;
 
+            foreach (KeyValuePair<int, double> keyValuePair in valueProbabilityDictionary)
+            {
+                mathExpectation += keyValuePair.Key * keyValuePair.Value;
+                mathExpectationFromXInSquare += Math.Pow(keyValuePair.Key, 2) * keyValuePair.Value;
+            }
+
+            return Math.Round(mathExpectationFromXInSquare - Math.Pow(mathExpectation, 2), 2);
         }
     }
 }
