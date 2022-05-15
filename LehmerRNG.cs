@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace GeneratorResearchPseudorandomNumbers
 {
-    class BuiltInRandom
+    class LehmerRNG
     {
+        private const int a = 48271;
+        private const int m = 2147483647;
+        private const int q = 127773;
+        private const int r = 2836;
+        private int seed;
+
         private int sequenceLength;
         private int[] randomArray;
 
@@ -18,9 +24,25 @@ namespace GeneratorResearchPseudorandomNumbers
         private double dispersion = 0;
         private double standartDeviation;
 
-        public BuiltInRandom(int sequenceLength)
+        public LehmerRNG(int seed, int sequenceLength)
         {
+            if (seed <= 0 || seed == int.MaxValue)
+                throw new Exception("Bad seed");
+            this.seed = seed;
             this.sequenceLength = sequenceLength;
+        }
+        /// <summary>
+        /// Генерирует случайное число из диапазона [0, 1] используя алгоритм Лемера
+        /// </summary>
+        /// <returns></returns>
+        public double Next()
+        {
+            int maxValue = seed / q;
+            int minValue = seed % q;
+            seed = (a * minValue) - (r * maxValue);
+            if (seed <= 0)
+                seed = seed + m;
+            return (seed * 1.0) / m;
         }
 
         public int[] GetRandomArray()
@@ -65,21 +87,16 @@ namespace GeneratorResearchPseudorandomNumbers
         private int[] GenerateRandomArray(int minValue, int maxValue)
         {
             int[] randomArray = new int[sequenceLength];
-            Random random = new Random();
 
-            for (int i = 0; i < sequenceLength; i++)
+            for (int i = 0; i < sequenceLength; ++i)
             {
-                randomArray[i] = random.Next(minValue, maxValue);
+                double lehmerRNGValue = Next();
+                int lehmerValue = (int)((maxValue - minValue) * lehmerRNGValue + minValue); // [minValue, maxValue - 1]
+                randomArray[i] = lehmerValue;
             }
-
-            CreateDictionaryOfProbabilities(randomArray);
 
             return randomArray;
         }
-
-        /// <summary>
-        /// Возвращает словарь с вероятностями появления каждого числа интервала [minValue, maxValue]
-        /// </summary>
         private SortedDictionary<int, double> CreateDictionaryOfProbabilities(int[] data)
         {
             Dictionary<int, int> valueRateDictionary = new Dictionary<int, int>(); // {значение, количество появлений}
@@ -131,7 +148,7 @@ namespace GeneratorResearchPseudorandomNumbers
 
             return mathExpectation;
         }
-        
+
         private double CalculateDispersion(SortedDictionary<int, double> valueProbabilityDictionary)
         {
             double mathExpectation = 0;
