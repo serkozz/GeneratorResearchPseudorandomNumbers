@@ -23,6 +23,7 @@ namespace GeneratorResearchPseudorandomNumbers
         private int builtInRNGFunctionChartSeriesCount = 0;
         private int lehmerRNGFunctionChartSeriesCount = 0;
 
+        List<PointF> squarePoints = new List<PointF>();
         private Color color = Color.Red;
         private int linesThickness = 35;
 
@@ -55,7 +56,7 @@ namespace GeneratorResearchPseudorandomNumbers
                 CreateChartSeries(valueChart, generatorType: GeneratorType.BuiltIn, isFrequencyChart: false, builtInRandom.GetDistributionFunctionOfRandomVariableDictionary());
 
                 ClearStats();
-                CreateStats(mathExpectation: builtInRandom.GetMathExpectation(), dispersion: builtInRandom.GetDispersion(), standartDeviation: builtInRandom.GetStandartDeviation());
+                CreateStats(mathExpectation: builtInRandom.GetMathExpectation(), dispersion: builtInRandom.GetDispersion(), standartDeviation: builtInRandom.GetStandartDeviation(), null);
             }
 
             else if (ownGeneratorTypeRadioButton.Checked)
@@ -68,7 +69,7 @@ namespace GeneratorResearchPseudorandomNumbers
                 CreateChartSeries(valueChart, generatorType: GeneratorType.Lehmer, isFrequencyChart: false, lehmerRandom.GetDistributionFunctionOfRandomVariableDictionary());
 
                 ClearStats();
-                CreateStats(mathExpectation: lehmerRandom.GetMathExpectation(), dispersion: lehmerRandom.GetDispersion(), standartDeviation: lehmerRandom.GetStandartDeviation());
+                CreateStats(mathExpectation: lehmerRandom.GetMathExpectation(), dispersion: lehmerRandom.GetDispersion(), standartDeviation: lehmerRandom.GetStandartDeviation(), null);
             }
 
             else if (noGeneratorRadioButton.Checked) // Для дебагинга
@@ -80,7 +81,7 @@ namespace GeneratorResearchPseudorandomNumbers
                 CreateChartSeries(valueChart, generatorType: GeneratorType.BuiltIn, isFrequencyChart: false, noRandom.GetDistributionFunctionOfRandomVariableDictionary());
 
                 ClearStats();
-                CreateStats(mathExpectation: noRandom.GetMathExpectation(), dispersion: noRandom.GetDispersion(), standartDeviation: noRandom.GetStandartDeviation());
+                CreateStats(mathExpectation: noRandom.GetMathExpectation(), dispersion: noRandom.GetDispersion(), standartDeviation: noRandom.GetStandartDeviation(), null);
             }
         }
 
@@ -170,33 +171,63 @@ namespace GeneratorResearchPseudorandomNumbers
         {
             valueChart.Series.Clear();
             frequencyChart.Series.Clear();
+            pointsSquareChart.Series[0].Points.Clear();
 
             builtInRNGFrequencyChartSeriesCount = 0;
             lehmerRNGFrequencyChartSeriesCount = 0;
             builtInRNGFunctionChartSeriesCount = 0;
             lehmerRNGFunctionChartSeriesCount = 0;
         }
-
-/*        private void UpdateCharts()
-        {
-            valueChart.Update();
-            frequencyChart.Update();
-        }*/
     
-        private void CreateStats(double mathExpectation, double dispersion, double standartDeviation)
+        private void CreateStats(double? mathExpectation, double? dispersion, double? standartDeviation, decimal? calculatedPiValue)
         {
             string mathExpectationString = "Математическое ожидание случайной величины: " + mathExpectation;
             string dispersionString = "Дисперсия случайной величины: " + dispersion;
             string standartDeviationString = "Средневадратичное отклонение (стандартное отклонение): " + standartDeviation;
+            string calculatedPiValueString = "Вычисленное значение числа Pi: " + calculatedPiValue;
             statsTextBox.Text = mathExpectationString + Environment.NewLine +
                                 Environment.NewLine + dispersionString +
                                 Environment.NewLine + Environment.NewLine +
-                                standartDeviationString;
+                                standartDeviationString + Environment.NewLine
+                                + Environment.NewLine + calculatedPiValueString;
         }
 
         private void ClearStats()
         {
             statsTextBox.Text = String.Empty;
+        }
+
+        private void CreateSquareOfPointsList(GeneratorType generatorType)
+        {
+            LehmerRNG lehmerRNG = new LehmerRNG(DateTime.Now.Second + DateTime.UtcNow.Hour, sequenceLength);
+            Random builtInRNG = new Random();
+
+            for (int i = 0; i < sequenceLength; i++)
+            {
+                if (generatorType == GeneratorType.Lehmer)
+                {
+                    squarePoints.Add(new PointF((float)lehmerRNG.Next(), (float)lehmerRNG.Next()));
+                }
+                else
+                {
+                    squarePoints.Add(new PointF((float)builtInRNG.NextDouble(), (float)builtInRNG.NextDouble()));
+                }
+            }
+        }
+        
+        private void ClearSquareOfPointsList()
+        {
+            squarePoints.Clear();
+        }
+
+        private void CreateSquareOfPointsChart(List<PointF> points)
+        {
+            pointsSquareChart.Series[0].Points.Clear();
+
+            foreach (var point in points)
+            {
+                pointsSquareChart.Series[0].Points.AddXY(point.X, point.Y);
+            }
         }
 
         private void clearButton_Click(object sender, EventArgs e)
@@ -208,6 +239,42 @@ namespace GeneratorResearchPseudorandomNumbers
         private void exitButton_Click(object sender, EventArgs e)
         {
             Dispose();
+        }
+
+        private void calculatePiButton_Click(object sender, EventArgs e)
+        {
+            if (builtInGeneratorTypeRadioButton.Checked)
+            {
+                sequenceLength = TryParseInt(sequenceLengthTextBox.Text);
+                ClearSquareOfPointsList();
+                CreateSquareOfPointsList(generatorType: GeneratorType.BuiltIn);
+
+                if (!noPointsCheckBox.Checked)
+                {
+                    CreateSquareOfPointsChart(squarePoints);
+                }
+
+                CalculatePi calculatePi = new CalculatePi(squarePoints);
+
+                ClearStats();
+                CreateStats(null, null, null, calculatePi.GetCalculatedPiValue());
+            }
+            else if (ownGeneratorTypeRadioButton.Checked)
+            {
+                sequenceLength = TryParseInt(sequenceLengthTextBox.Text);
+                ClearSquareOfPointsList();
+                CreateSquareOfPointsList(generatorType:GeneratorType.Lehmer);
+
+                if (!noPointsCheckBox.Checked)
+                {
+                    CreateSquareOfPointsChart(squarePoints);
+                }
+
+                CalculatePi calculatePi = new CalculatePi(squarePoints);
+
+                ClearStats();
+                CreateStats(null, null, null, calculatePi.GetCalculatedPiValue());
+            }
         }
     }
 }

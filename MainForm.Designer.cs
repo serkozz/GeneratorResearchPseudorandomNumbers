@@ -29,14 +29,17 @@ namespace GeneratorResearchPseudorandomNumbers
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title4 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title5 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title6 = new System.Windows.Forms.DataVisualization.Charting.Title();
             this.label1 = new System.Windows.Forms.Label();
             this.sequenceLengthTextBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -50,8 +53,12 @@ namespace GeneratorResearchPseudorandomNumbers
             this.frequencyChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.valueChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.noGeneratorRadioButton = new System.Windows.Forms.RadioButton();
+            this.pointsSquareChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.calculatePiButton = new System.Windows.Forms.Button();
+            this.noPointsCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.frequencyChart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.valueChart)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pointsSquareChart)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -60,7 +67,7 @@ namespace GeneratorResearchPseudorandomNumbers
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(215, 16);
+            this.label1.Size = new System.Drawing.Size(214, 16);
             this.label1.TabIndex = 0;
             this.label1.Text = "Длина последовательности";
             // 
@@ -77,7 +84,7 @@ namespace GeneratorResearchPseudorandomNumbers
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label2.Location = new System.Drawing.Point(12, 87);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(87, 16);
+            this.label2.Size = new System.Drawing.Size(86, 16);
             this.label2.TabIndex = 2;
             this.label2.Text = "Генератор";
             // 
@@ -111,7 +118,7 @@ namespace GeneratorResearchPseudorandomNumbers
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label3.Location = new System.Drawing.Point(12, 152);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(94, 16);
+            this.label3.Size = new System.Drawing.Size(93, 16);
             this.label3.TabIndex = 5;
             this.label3.Text = "Статистика";
             // 
@@ -158,45 +165,46 @@ namespace GeneratorResearchPseudorandomNumbers
             // 
             // frequencyChart
             // 
-            chartArea1.Name = "ChartArea1";
-            this.frequencyChart.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.frequencyChart.Legends.Add(legend1);
+            chartArea4.Name = "ChartArea1";
+            this.frequencyChart.ChartAreas.Add(chartArea4);
+            legend3.Name = "Legend1";
+            this.frequencyChart.Legends.Add(legend3);
             this.frequencyChart.Location = new System.Drawing.Point(233, 12);
             this.frequencyChart.Name = "frequencyChart";
-            series1.ChartArea = "ChartArea1";
-            series1.IsVisibleInLegend = false;
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.frequencyChart.Series.Add(series1);
+            this.frequencyChart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
+            series4.ChartArea = "ChartArea1";
+            series4.IsVisibleInLegend = false;
+            series4.Legend = "Legend1";
+            series4.Name = "Series1";
+            this.frequencyChart.Series.Add(series4);
             this.frequencyChart.Size = new System.Drawing.Size(555, 210);
             this.frequencyChart.TabIndex = 10;
             this.frequencyChart.Text = "chart1";
-            title1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            title1.Name = "Title1";
-            title1.Text = "Относительные частоты появления значений";
-            this.frequencyChart.Titles.Add(title1);
+            title4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            title4.Name = "Title1";
+            title4.Text = "Относительные частоты появления значений";
+            this.frequencyChart.Titles.Add(title4);
             // 
             // valueChart
             // 
-            chartArea2.Name = "ChartArea1";
-            this.valueChart.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.valueChart.Legends.Add(legend2);
+            chartArea5.Name = "ChartArea1";
+            this.valueChart.ChartAreas.Add(chartArea5);
+            legend4.Name = "Legend1";
+            this.valueChart.Legends.Add(legend4);
             this.valueChart.Location = new System.Drawing.Point(233, 235);
             this.valueChart.Name = "valueChart";
-            series2.ChartArea = "ChartArea1";
-            series2.IsVisibleInLegend = false;
-            series2.Legend = "Legend1";
-            series2.Name = "Series1";
-            this.valueChart.Series.Add(series2);
+            series5.ChartArea = "ChartArea1";
+            series5.IsVisibleInLegend = false;
+            series5.Legend = "Legend1";
+            series5.Name = "Series1";
+            this.valueChart.Series.Add(series5);
             this.valueChart.Size = new System.Drawing.Size(555, 210);
             this.valueChart.TabIndex = 11;
             this.valueChart.Text = "chart2";
-            title2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            title2.Name = "Title1";
-            title2.Text = "Интегральная функция распределения";
-            this.valueChart.Titles.Add(title2);
+            title5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            title5.Name = "Title1";
+            title5.Text = "Интегральная функция распределения";
+            this.valueChart.Titles.Add(title5);
             // 
             // noGeneratorRadioButton
             // 
@@ -210,11 +218,55 @@ namespace GeneratorResearchPseudorandomNumbers
             this.noGeneratorRadioButton.Text = "Фиксированные данные";
             this.noGeneratorRadioButton.UseVisualStyleBackColor = true;
             // 
+            // pointsSquareChart
+            // 
+            chartArea6.Name = "ChartArea1";
+            this.pointsSquareChart.ChartAreas.Add(chartArea6);
+            this.pointsSquareChart.Location = new System.Drawing.Point(797, 9);
+            this.pointsSquareChart.Name = "pointsSquareChart";
+            this.pointsSquareChart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
+            series6.ChartArea = "ChartArea1";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series6.IsVisibleInLegend = false;
+            series6.Name = "Series1";
+            this.pointsSquareChart.Series.Add(series6);
+            this.pointsSquareChart.Size = new System.Drawing.Size(275, 275);
+            this.pointsSquareChart.TabIndex = 13;
+            this.pointsSquareChart.Text = "chart1";
+            title6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            title6.Name = "Title1";
+            title6.Text = "Квадрат значений";
+            this.pointsSquareChart.Titles.Add(title6);
+            // 
+            // calculatePiButton
+            // 
+            this.calculatePiButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.calculatePiButton.Location = new System.Drawing.Point(797, 290);
+            this.calculatePiButton.Name = "calculatePiButton";
+            this.calculatePiButton.Size = new System.Drawing.Size(275, 23);
+            this.calculatePiButton.TabIndex = 14;
+            this.calculatePiButton.Text = "Посчитать число pi";
+            this.calculatePiButton.UseVisualStyleBackColor = true;
+            this.calculatePiButton.Click += new System.EventHandler(this.calculatePiButton_Click);
+            // 
+            // noPointsCheckBox
+            // 
+            this.noPointsCheckBox.AutoSize = true;
+            this.noPointsCheckBox.Location = new System.Drawing.Point(797, 319);
+            this.noPointsCheckBox.Name = "noPointsCheckBox";
+            this.noPointsCheckBox.Size = new System.Drawing.Size(186, 17);
+            this.noPointsCheckBox.TabIndex = 15;
+            this.noPointsCheckBox.Text = "Не отображать точки (быстрее)";
+            this.noPointsCheckBox.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1084, 450);
+            this.Controls.Add(this.noPointsCheckBox);
+            this.Controls.Add(this.calculatePiButton);
+            this.Controls.Add(this.pointsSquareChart);
             this.Controls.Add(this.noGeneratorRadioButton);
             this.Controls.Add(this.valueChart);
             this.Controls.Add(this.frequencyChart);
@@ -232,6 +284,7 @@ namespace GeneratorResearchPseudorandomNumbers
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.frequencyChart)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.valueChart)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pointsSquareChart)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -252,6 +305,9 @@ namespace GeneratorResearchPseudorandomNumbers
         private System.Windows.Forms.DataVisualization.Charting.Chart frequencyChart;
         private System.Windows.Forms.DataVisualization.Charting.Chart valueChart;
         private System.Windows.Forms.RadioButton noGeneratorRadioButton;
+        private System.Windows.Forms.DataVisualization.Charting.Chart pointsSquareChart;
+        private System.Windows.Forms.Button calculatePiButton;
+        private System.Windows.Forms.CheckBox noPointsCheckBox;
     }
 }
 
