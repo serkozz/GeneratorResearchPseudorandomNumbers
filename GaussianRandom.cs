@@ -6,9 +6,19 @@ using System.Threading.Tasks;
 
 namespace GeneratorResearchPseudorandomNumbers
 {
-    class FixedDataNoRandom
+    public class GaussianRandom
     {
-        private int[] fixedArray;
+        private int sequenceLength;
+        private bool _hasDeviate;
+        private double _storedDeviate;
+        private int[] randomArray;
+
+        private int mu = 0;
+        private int sigma = 1;
+
+        private Random builtInRandom;
+        private LehmerRNG lehmerRNG;
+        private GeneratorType generatorType = GeneratorType.BuiltIn;
 
         private SortedDictionary<int, double> valueProbabilityDictionary = new SortedDictionary<int, double>();
         private SortedDictionary<int, double> distributionFunctionOfRandomVariableDictionary = new SortedDictionary<int, double>();
@@ -16,24 +26,24 @@ namespace GeneratorResearchPseudorandomNumbers
         private double mathExpectation = 0;
         private double dispersion = 0;
         private double standartDeviation;
-        public FixedDataNoRandom()
+
+        public GaussianRandom(GeneratorType generatorType, int sequenceLength, int mu, int sigma)
         {
-            fixedArray = GenerateFixedArray();
-        }
-        private int[] GenerateFixedArray()
-        {
-            return new int[] { 12, 12, 12, 12, 5 };
+            this.sequenceLength = sequenceLength;
+            this.mu = mu;
+            this.sigma = sigma;
+            this.generatorType = generatorType;
+
+            if (generatorType == GeneratorType.BuiltIn)
+                builtInRandom = new Random();
+            if (generatorType == GeneratorType.Lehmer)
+                lehmerRNG = new LehmerRNG(DateTime.Now.Second + DateTime.UtcNow.Hour, sequenceLength);
         }
 
-        public void General()
+        public int[] GetRandomArray()
         {
-            valueProbabilityDictionary = CreateDictionaryOfProbabilities(fixedArray);
-            distributionFunctionOfRandomVariableDictionary = CreateDictionaryForDistributionFunctionOfRandomVariable(valueProbabilityDictionary);
-            mathExpectation = CalculateMathExpectation(valueProbabilityDictionary);
-            dispersion = CalculateDispersion(valueProbabilityDictionary);
-            standartDeviation = CalculateStandartDeviation(dispersion);
+            return randomArray;
         }
-
         public SortedDictionary<int, double> GetValueProbabilityDictionary()
         {
             return valueProbabilityDictionary;
@@ -59,9 +69,77 @@ namespace GeneratorResearchPseudorandomNumbers
             return standartDeviation;
         }
 
+        public void General()
+        {
+            randomArray = GenerateRandomArray(0, 100);
+            valueProbabilityDictionary = CreateDictionaryOfProbabilities(randomArray);
+            distributionFunctionOfRandomVariableDictionary = CreateDictionaryForDistributionFunctionOfRandomVariable(valueProbabilityDictionary);
+            mathExpectation = CalculateMathExpectation(valueProbabilityDictionary);
+            dispersion = CalculateDispersion(valueProbabilityDictionary);
+            standartDeviation = CalculateStandartDeviation(dispersion);
+        }
+
         /// <summary>
-        /// Возвращает словарь с вероятностями появления каждого числа интервала [minValue, maxValue]
+        /// Obtains normally (Gaussian) distributed random numbers, using the Box-Muller
+        /// transformation.  This transformation takes two uniformly distributed deviates
+        /// within the unit circle, and transforms them into two independently
+        /// distributed normal deviates.
         /// </summary>
+        /// <param name="mu">The mean of the distribution.  Default is zero.</param>
+        /// <param name="sigma">The standard deviation of the distribution.  Default is one.</param>
+        /// <returns></returns>
+        public double NextGaussian(double mu = 0, double sigma = 1)
+        {
+            if (sigma <= 0)
+                throw new ArgumentOutOfRangeException("sigma", "Must be greater than zero.");
+
+            if (_hasDeviate)
+            {
+                _hasDeviate = false;
+                return _storedDeviate * sigma + mu;
+            }
+
+            double v1 = 0, v2 = 0, rSquared = 0;
+            do
+            {
+                if (generatorType == GeneratorType.BuiltIn)
+                {
+                    // two random values between -1.0 and 1.0
+                    v1 = 2 * builtInRandom.NextDouble() - 1;
+                    v2 = 2 * builtInRandom.NextDouble() - 1;
+                }
+                if (generatorType == GeneratorType.Lehmer)
+                {
+                    // two random values between -1.0 and 1.0
+                    v1 = 2 * lehmerRNG.Next() - 1;
+                    v2 = 2 * lehmerRNG.Next() - 1;
+                }
+                rSquared = v1 * v1 + v2 * v2;
+                // ensure within the unit circle
+            } while (rSquared >= 1 || rSquared == 0);
+
+            // calculate polar tranformation for each deviate
+            var polar = Math.Sqrt(-2 * Math.Log(rSquared) / rSquared);
+            // store first deviate
+            _storedDeviate = v2 * polar;
+            _hasDeviate = true;
+            // return second deviate
+            return v1 * polar * sigma + mu;
+        }
+
+        private int[] GenerateRandomArray(int minValue, int maxValue)
+        {
+            int[] randomArray = new int[sequenceLength];
+
+            for (int i = 0; i < sequenceLength; i++)
+            {
+                double gausianRNGValue = NextGaussian(mu, sigma);
+                int gausianValue = (int)((maxValue - minValue) * gausianRNGValue + minValue); // [minValue, maxValue - 1]
+                randomArray[i] = gausianValue;
+            }
+
+            return randomArray;
+        }
         private SortedDictionary<int, double> CreateDictionaryOfProbabilities(int[] data)
         {
             Dictionary<int, int> valueRateDictionary = new Dictionary<int, int>(); // {значение, количество появлений}
@@ -79,50 +157,21 @@ namespace GeneratorResearchPseudorandomNumbers
             foreach (KeyValuePair<int, int> valueRatePair in valueRateDictionary)
             {
                 double first = valueRatePair.Value;
-                double second = fixedArray.Length;
+                double second = sequenceLength;
                 probability = first / second;
                 //probability = valueRatePair.Value / sequenceLength; // Лол, а так он не делит, так получается ноль всегда, ладно,
                 valueProbabilityDictionary.Add(valueRatePair.Key, Math.Round(probability, 5));
             }
             SortedDictionary<int, double> sortedByKeyProbabilityDictionary = new SortedDictionary<int, double>(valueProbabilityDictionary);
-            
+
             return sortedByKeyProbabilityDictionary;
         }
-
-        /*        F(x≤1) = 0
-                F(1< x ≤2) = 0.2
-                F(2< x ≤3) = 0.2 + 0.2 = 0.4
-                F(3< x ≤4) = 0.2 + 0.4 = 0.6
-                F(4< x ≤5) = 0.2 + 0.6 = 0.8
-                F(x>5) = 1*/
 
         private SortedDictionary<int, double> CreateDictionaryForDistributionFunctionOfRandomVariable(SortedDictionary<int, double> valueProbabilityDictionary)
         {
             SortedDictionary<int, double> distributionFunctionOfRandomVariableDictionary = new SortedDictionary<int, double>(); // {значение, вероятность того, что следующее значение будет меньше чем текущее}
             double probabilitySum = 0;
-            /*            bool isNowFirstElementOfTheDictionary = true;
-                        bool isNowLastElementOfTheDictionary = false;*/
 
-            /// Подумать над этим, пока выберу более легкое
-            /*            foreach (KeyValuePair<int, double> keyValuePair in sortedByKeyValueProbabilityDictionary)
-                        {
-                            if(isNowFirstElementOfTheDictionary)
-                            {
-                                distributionFunctionOfRandomVariableDictionary.Add(keyValuePair.Key - 1, probabilitySum);
-                                isNowFirstElementOfTheDictionary = false;
-                            }
-                            else if (isNowLastElementOfTheDictionary)
-                            {
-                                distributionFunctionOfRandomVariableDictionary.Add(keyValuePair.Key + 1, probabilitySum);
-                                isNowLastElementOfTheDictionary = false;
-                            }
-                            else
-                            {
-                                if(keyValuePair.Key + 1 == sortedByKeyValueProbabilityDictionary)
-                                distributionFunctionOfRandomVariableDictionary.Add(keyValuePair.Key, probabilitySum);
-                            }
-                            probabilitySum += keyValuePair.Value;
-                        }*/
             foreach (KeyValuePair<int, double> keyValuePair in valueProbabilityDictionary)
             {
                 probabilitySum += Math.Round(keyValuePair.Value, 5);
@@ -131,7 +180,6 @@ namespace GeneratorResearchPseudorandomNumbers
 
             return distributionFunctionOfRandomVariableDictionary;
         }
-
         private double CalculateMathExpectation(SortedDictionary<int, double> valueProbabilityDictionary)
         {
             double mathExpectation = 0;
@@ -157,10 +205,10 @@ namespace GeneratorResearchPseudorandomNumbers
 
             return Math.Round(mathExpectationFromXInSquare - Math.Pow(mathExpectation, 2), 2);
         }
+
         private double CalculateStandartDeviation(double dispersion)
         {
             return Math.Round(Math.Sqrt(dispersion), 2);
         }
-
     }
 }

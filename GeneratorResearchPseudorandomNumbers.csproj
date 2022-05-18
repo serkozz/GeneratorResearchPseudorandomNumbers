@@ -49,7 +49,8 @@
   <ItemGroup>
     <Compile Include="BuiltInRandom.cs" />
     <Compile Include="CalculatePi.cs" />
-    <Compile Include="FixedDataNoRandom.cs" />
+    <Compile Include="GaussianRandom.cs" />
+    <Compile Include="GeneratorType.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

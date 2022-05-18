@@ -14,6 +14,8 @@ namespace GeneratorResearchPseudorandomNumbers
     public partial class MainForm : Form
     {
         private int sequenceLength;
+        private int mu;
+        private int sigma;
 
         private const int maxChartSeriesPerRNGType = 3;
 
@@ -25,29 +27,46 @@ namespace GeneratorResearchPseudorandomNumbers
 
         List<PointF> squarePoints = new List<PointF>();
         private Color color = Color.Red;
-        private int linesThickness = 35;
+        private int linesThickness = 105;
 
         public MainForm()
         {
             InitializeComponent();
-        }
-
-        private enum GeneratorType
-        {
-            BuiltIn,
-            Lehmer
+            builtInGeneratorTypeRadioButton.Checked = true;
         }
 
         private void startButton_Click(object sender, EventArgs e)
         {
-            sequenceLength = TryParseInt(sequenceLengthTextBox.Text);
+            sequenceLength = TryParseInt(sequenceLengthTextBox.Text, 0);
+            mu = TryParseInt(muTextBox.Text, 1);
+            sigma = TryParseInt(sigmaTextBox.Text, 2);
+
             Random rand = new Random();
             int r = rand.Next(0, 255);
             int g = rand.Next(0, 255);
             int b = rand.Next(0, 255);
             color = Color.FromArgb(255, r, g, b);
 
-            if (builtInGeneratorTypeRadioButton.Checked)
+            if (normalDistributionCheckBox.Checked)
+            {
+                GeneratorType generatorType = GeneratorType.BuiltIn;
+
+                if (ownGeneratorTypeRadioButton.Checked)
+                    generatorType = GeneratorType.Lehmer;
+                else
+                    generatorType = GeneratorType.BuiltIn;
+
+                GaussianRandom gausianRandom = new GaussianRandom(generatorType, sequenceLength, mu, sigma);
+                gausianRandom.General();
+
+                CreateChartSeries(frequencyChart, generatorType: generatorType, isFrequencyChart: true, gausianRandom.GetValueProbabilityDictionary());
+                CreateChartSeries(valueChart, generatorType: generatorType, isFrequencyChart: false, gausianRandom.GetDistributionFunctionOfRandomVariableDictionary());
+
+                ClearStats();
+                CreateStats(mathExpectation: gausianRandom.GetMathExpectation(), dispersion: gausianRandom.GetDispersion(), standartDeviation: gausianRandom.GetStandartDeviation(), null);
+            }
+
+            else if (builtInGeneratorTypeRadioButton.Checked)
             {
                 BuiltInRandom builtInRandom = new BuiltInRandom(sequenceLength);
                 builtInRandom.General();
@@ -61,8 +80,7 @@ namespace GeneratorResearchPseudorandomNumbers
 
             else if (ownGeneratorTypeRadioButton.Checked)
             {
-                int lehmerSeed = DateTime.Now.Second + DateTime.UtcNow.Hour;
-                LehmerRNG lehmerRandom = new LehmerRNG(lehmerSeed, sequenceLength);
+                LehmerRNG lehmerRandom = new LehmerRNG(DateTime.Now.Second + DateTime.UtcNow.Hour, sequenceLength);
                 lehmerRandom.General();
 
                 CreateChartSeries(frequencyChart, generatorType: GeneratorType.Lehmer, isFrequencyChart: true, lehmerRandom.GetValueProbabilityDictionary());
@@ -71,29 +89,27 @@ namespace GeneratorResearchPseudorandomNumbers
                 ClearStats();
                 CreateStats(mathExpectation: lehmerRandom.GetMathExpectation(), dispersion: lehmerRandom.GetDispersion(), standartDeviation: lehmerRandom.GetStandartDeviation(), null);
             }
-
-            else if (noGeneratorRadioButton.Checked) // Для дебагинга
-            {
-                FixedDataNoRandom noRandom = new FixedDataNoRandom();
-                noRandom.General();
-
-                CreateChartSeries(frequencyChart, generatorType: GeneratorType.BuiltIn, isFrequencyChart: true, noRandom.GetValueProbabilityDictionary());
-                CreateChartSeries(valueChart, generatorType: GeneratorType.BuiltIn, isFrequencyChart: false, noRandom.GetDistributionFunctionOfRandomVariableDictionary());
-
-                ClearStats();
-                CreateStats(mathExpectation: noRandom.GetMathExpectation(), dispersion: noRandom.GetDispersion(), standartDeviation: noRandom.GetStandartDeviation(), null);
-            }
         }
 
-        private int TryParseInt(string text)
+        private int TryParseInt(string text, int parseFieldNumber)
         {
             int value = 0;
 
             if (Int32.TryParse(text, out value))
             {
-                sequenceLength = value;
+                switch (parseFieldNumber)
+                {
+                    case 0:
+                        sequenceLength = value;
+                        break;
+                    case 1:
+                        mu = value;
+                        break;
+                    case 2:
+                        sigma = value;
+                        break;
+                }
             }
-
             return value;
         }
 
@@ -112,6 +128,7 @@ namespace GeneratorResearchPseudorandomNumbers
                     {
                         chart.Series[builtInRNGFrequencyChartSeriesCount].Points.AddXY(keyValuePair.Key, keyValuePair.Value);
                         chart.Series[builtInRNGFrequencyChartSeriesCount]["PixelPointWidth"] = linesThickness.ToString();
+                        chart.Series[builtInRNGFrequencyChartSeriesCount].ChartType = SeriesChartType.StepLine;
                         chart.Series[builtInRNGFrequencyChartSeriesCount].Color = color;
                     }
                     builtInRNGFrequencyChartSeriesCount++;
@@ -127,6 +144,7 @@ namespace GeneratorResearchPseudorandomNumbers
                     {
                         chart.Series[builtInRNGFunctionChartSeriesCount].Points.AddXY(keyValuePair.Key, keyValuePair.Value);
                         chart.Series[builtInRNGFunctionChartSeriesCount]["PixelPointWidth"] = linesThickness.ToString();
+                        chart.Series[builtInRNGFunctionChartSeriesCount].ChartType = SeriesChartType.StepLine;
                         chart.Series[builtInRNGFunctionChartSeriesCount].Color = color;
                     }
                     builtInRNGFunctionChartSeriesCount++;
@@ -146,6 +164,7 @@ namespace GeneratorResearchPseudorandomNumbers
                     {
                         chart.Series[lehmerRNGFrequencyChartSeriesCount].Points.AddXY(keyValuePair.Key, keyValuePair.Value);
                         chart.Series[lehmerRNGFrequencyChartSeriesCount]["PixelPointWidth"] = linesThickness.ToString();
+                        chart.Series[lehmerRNGFrequencyChartSeriesCount].ChartType = SeriesChartType.StepLine;
                         chart.Series[lehmerRNGFrequencyChartSeriesCount].Color = color;
                     }
                     lehmerRNGFrequencyChartSeriesCount++;
@@ -161,12 +180,14 @@ namespace GeneratorResearchPseudorandomNumbers
                     {
                         chart.Series[lehmerRNGFunctionChartSeriesCount].Points.AddXY(keyValuePair.Key, keyValuePair.Value);
                         chart.Series[lehmerRNGFunctionChartSeriesCount]["PixelPointWidth"] = linesThickness.ToString();
+                        chart.Series[lehmerRNGFunctionChartSeriesCount].ChartType = SeriesChartType.StepLine;
                         chart.Series[lehmerRNGFunctionChartSeriesCount].Color = color;
                     }
                     lehmerRNGFunctionChartSeriesCount++;
                 }
             }
         }
+
         private void ClearCharts()
         {
             valueChart.Series.Clear();
@@ -245,7 +266,7 @@ namespace GeneratorResearchPseudorandomNumbers
         {
             if (builtInGeneratorTypeRadioButton.Checked)
             {
-                sequenceLength = TryParseInt(sequenceLengthTextBox.Text);
+                sequenceLength = TryParseInt(sequenceLengthTextBox.Text, 0);
                 ClearSquareOfPointsList();
                 CreateSquareOfPointsList(generatorType: GeneratorType.BuiltIn);
 
@@ -261,7 +282,7 @@ namespace GeneratorResearchPseudorandomNumbers
             }
             else if (ownGeneratorTypeRadioButton.Checked)
             {
-                sequenceLength = TryParseInt(sequenceLengthTextBox.Text);
+                sequenceLength = TryParseInt(sequenceLengthTextBox.Text, 0);
                 ClearSquareOfPointsList();
                 CreateSquareOfPointsList(generatorType:GeneratorType.Lehmer);
 
